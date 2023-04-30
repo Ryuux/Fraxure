@@ -1,11 +1,14 @@
 const { Client, Collection } = require('discord.js')
 const { CLIENT_OPTIONS } = require('../config')
+
+const connectToDatabase = require('./database/connect')
 const fs = require('fs')
 const path = require('path')
 
 module.exports = class Fraxure extends Client {
   constructor () {
     super(CLIENT_OPTIONS)
+    connectToDatabase(process.env.MONGODB_URI)
 
     this.commands = new Collection()
     this.aliases = new Collection()
