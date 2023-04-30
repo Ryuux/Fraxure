@@ -1,0 +1,28 @@
+{
+  "name": "fraxure",
+  "version": "1.0.0",
+  "description": "Fraxure is an economics focused discord bot for now",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": [
+    "discord",
+    "economy-bot",
+    "discordjs",
+    "javascript",
+    "nodejs"
+  ],
+  "author": "ILoveRyuux",
+  "dependencies": {
+    "discord.js": "^14.9.0",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22",
+    "standard": "^17.0.0"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/standard/eslintrc.json"
+  }
+}
