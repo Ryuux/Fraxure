@@ -1,9 +1,10 @@
-const { Client, Collection } = require('discord.js')
 const { CLIENT_OPTIONS } = require('../config')
+const { Client, Collection } = require('discord.js')
 
-const connectToDatabase = require('./database/connect')
 const fs = require('fs')
 const path = require('path')
+const User = require('../lib/database/models/User')
+const connectToDatabase = require('./database/connect')
 
 module.exports = class Fraxure extends Client {
   constructor () {
@@ -31,11 +32,17 @@ module.exports = class Fraxure extends Client {
 
       const commandArgs = args.slice(1)
 
+      const userId = message.author.id
+      const user = await User.findOne({ userId })
+      if (!user && commandName !== 'register') {
+        return message.reply('you must register first to be able to use any command.')
+      }
+
       try {
         await command.run(message, this, commandArgs)
       } catch (err) {
         console.error(err)
-        message.reply('Ocurrió un error al ejecutar el comando.')
+        message.reply('An error occurred while executing the command.')
       }
     })
   }
