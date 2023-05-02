@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js')
+const { EmbedSend } = require('../lib/helpers/embeds')
 const User = require('../lib/database/models/User')
 
 module.exports = {
@@ -15,11 +15,6 @@ module.exports = {
 
     await user.save()
 
-    const embedWork = new EmbedBuilder()
-      .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-      .setDescription(`You worked hard and earned ${earnedMoney} coins! Your new balance is ${user.balance} coins.`)
-      .setTimestamp()
-
-    return message.reply({ embeds: [embedWork] })
+    return EmbedSend(message, `You worked hard and earned ${earnedMoney} coins! Your new balance is ${user.balance} coins.`)
   }
 }

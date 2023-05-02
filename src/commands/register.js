@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js')
+const { EmbedSend } = require('../lib/helpers/embeds')
 const User = require('../lib/database/models/User')
 
 module.exports = {
@@ -11,38 +11,16 @@ module.exports = {
     const update = { userId, $setOnInsert: { balance: 0, bank: 0 } }
     const options = { upsert: true, new: true }
 
-    // Verificar que el objeto `update` tenga un valor no nulo para `userId`
     if (!userId) {
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-          .setDescription('There was an error registering your account.')
-          .setColor(0xff0000)
-          .setTimestamp()
-        ]
-      })
+      return EmbedSend(message, 'There was an error registering your account.')
     }
 
     const { upserted } = await User.findOneAndUpdate(filter, update, options)
 
     if (upserted) {
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-          .setDescription('You have been successfully registered!')
-          .setColor(5763719)
-          .setTimestamp()
-        ]
-      })
+      return EmbedSend(message, 'You have been successfully registered!')
     } else {
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-          .setDescription('You have already registered!')
-          .setColor(5763719)
-          .setTimestamp()
-        ]
-      })
+      return EmbedSend(message, 'You have already registered!')
     }
   }
 }

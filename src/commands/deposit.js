@@ -1,48 +1,23 @@
-const { EmbedBuilder } = require('discord.js')
+const { EmbedSend } = require('../lib/helpers/embeds')
 const User = require('../lib/database/models/User')
 
 module.exports = {
   name: 'deposit',
   description: 'Deposit coins to your bank account.',
   category: 'Economy',
-  async run (message, client, args) {
+  async run (message, client, [depositAmount]) {
     const userId = message.author.id
-    const user = await User.findOne({ userId })
 
-    const depositAmount = parseInt(args[0])
-
-    if (isNaN(depositAmount) || depositAmount < 1) {
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-          .setDescription('please provide a valid positive number to deposit.')
-          .setTimestamp()
-        ]
-      })
+    if (depositAmount && depositAmount.toLowerCase() === 'all') {
+      const user = await User.findOne({ userId })
+      depositAmount = user.balance
+    } else {
+      depositAmount = parseInt(depositAmount)
+      if (isNaN(depositAmount) || depositAmount < 1) return EmbedSend(message, 'please provide a valid positive number to deposit.')
     }
 
-    const { balance } = user
+    await User.findOneAndUpdate({ userId }, { $inc: { bank: depositAmount, balance: -depositAmount } })
 
-    if (balance < depositAmount) {
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-          .setDescription(`you don't have enough coins to deposit ${depositAmount} coins.`)
-          .setTimestamp()
-        ]
-      })
-    }
-
-    user.balance -= depositAmount
-    user.bank += depositAmount
-    await user.save()
-
-    return message.reply({
-      embeds: [new EmbedBuilder()
-        .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-        .setDescription(`you deposited ${depositAmount} coins to your bank account.`)
-        .setTimestamp()
-      ]
-    })
+    return EmbedSend(message, `you deposited ${depositAmount} coins to your bank account.`)
   }
 }

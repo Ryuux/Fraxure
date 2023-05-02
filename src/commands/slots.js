@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js')
+const { EmbedSend } = require('../lib/helpers/embeds')
 const User = require('../lib/database/models/User')
 
 const SLOT_EMOJIS = [':gem:', ':moneybag:', ':money_with_wings:', ':tada:', ':lemon:', ':seven:', ':cherries:']
@@ -14,23 +14,11 @@ module.exports = {
     const betAmount = parseInt(args[0])
 
     if (isNaN(betAmount) || betAmount < 1) {
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-          .setDescription()
-          .setTimestamp()
-        ]
-      })
+      return EmbedSend(message, 'Invalid bet amount. Please enter a number greater than 0.')
     }
 
-    if (betAmount > user.coins) {
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-          .setDescription(`you don't have enough coins to make that bet. Your current balance is ${user.coins}.`)
-          .setTimestamp()
-        ]
-      })
+    if (betAmount > user.balance) {
+      return EmbedSend(message, 'You don\'t have enough coins to make that bet.')
     }
 
     const slot1 = SLOT_EMOJIS[Math.floor(Math.random() * SLOT_EMOJIS.length)]
@@ -42,25 +30,19 @@ module.exports = {
 
     if (slot1 === slot2 && slot2 === slot3) {
       winnings = betAmount * 10
-      user.coins += winnings
+      user.balance += winnings
       messageText = `JACKPOT! ${slot1} | ${slot2} | ${slot3} \n\nYou won ${winnings} coins!`
     } else if (slot1 === slot2 || slot2 === slot3 || slot1 === slot3) {
       winnings = betAmount * 2
-      user.coins += winnings
+      user.balance += winnings
       messageText = `${slot1} | ${slot2} | ${slot3} \n\nCongratulations! You won ${winnings} coins!`
     } else {
-      user.coins -= betAmount
+      user.balance -= betAmount
       messageText = `${slot1} | ${slot2} | ${slot3} \n\nI'm sorry! You lost ${betAmount} coins.`
     }
 
     await user.save()
 
-    return message.reply({
-      embeds: [new EmbedBuilder()
-        .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-        .setDescription(messageText)
-        .setTimestamp()
-      ]
-    })
+    return EmbedSend(message, messageText)
   }
 }
