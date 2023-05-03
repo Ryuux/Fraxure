@@ -5,6 +5,7 @@ module.exports = {
   name: 'withdraw',
   description: 'Withdraw coins from your bank account.',
   category: 'Economy',
+  cooldown: 5,
   async run (message, client, args) {
     const userId = message.author.id
     const user = await User.findOne({ userId })

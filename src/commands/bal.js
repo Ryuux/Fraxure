@@ -5,6 +5,7 @@ module.exports = {
   name: 'bal',
   description: 'Check your balance.',
   category: 'Economy',
+  cooldown: 5,
   async run (message, client, args) {
     const user = await User.findOne({ userId: message.author.id })
 

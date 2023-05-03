@@ -5,6 +5,7 @@ module.exports = {
   name: 'register',
   description: 'Register your account.',
   category: 'Economy',
+  cooldown: 5,
   async run (message, client, args) {
     const userId = message.author.id
     const filter = { userId }

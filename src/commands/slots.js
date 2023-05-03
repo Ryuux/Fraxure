@@ -7,6 +7,7 @@ module.exports = {
   name: 'slots',
   description: 'Bet your coins on a slot machine and win prizes.',
   category: 'Economy',
+  cooldown: 5,
   async run (message, client, args) {
     const userId = message.author.id
     const user = await User.findOne({ userId })

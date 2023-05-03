@@ -5,6 +5,7 @@ module.exports = {
   name: 'work',
   description: 'Earn some money by working.',
   category: 'Economy',
+  cooldown: 5,
   async run (message, client, args) {
     const userId = message.author.id
     const user = await User.findOne({ userId })

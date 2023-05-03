@@ -5,6 +5,7 @@ module.exports = {
   name: 'deposit',
   description: 'Deposit coins to your bank account.',
   category: 'Economy',
+  cooldown: 5,
   async run (message, client, [depositAmount]) {
     const userId = message.author.id
 
